@@ -117,24 +117,26 @@ body {
 	justify-content: space-between;
 	align-items: flex-start;
 	margin-bottom: 20px;
-	border-radius: 8px;
 	padding: 15px;
 	border: 1px solid #d4e8f7;
+	border-radius: 8px;
+	gap: 20px;
 }
+
 
 .photo-container-right {
 	flex-shrink: 0;
-	margin-left: 30px;
+
 	padding-top: 5px;
 }
 
 .photo {
-	margin-top: 5px;
-	width: 140px;
-	height: 180px;
+
+	width: 160px;
+	height: 200px;
 	border: 4px solid #1e3c72;
 	object-fit: cover;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
 	border-radius: 6px;
 }
 
@@ -146,7 +148,7 @@ body {
 }
 
 .data-table td {
-	padding: 10px 15px;
+	    padding: 10px 0px 10px 10px;
 	vertical-align: top;
 	border-bottom: 1px dashed #ddd;
 }
@@ -181,7 +183,7 @@ body {
 /* Signature Area */
 .signature-row {
 	height: 60px;
-	border-top: 2px solid #ccc;
+	border-top: 2px solid #ccc; 
 	margin-top: 40px;
 	padding-top: 15px;
 	display: flex;
@@ -293,6 +295,20 @@ footer {
 	padding-top: 5px;
 	border-top: 1px solid #eee;
 }
+ @media print {
+    @page {
+      size: A5;
+      margin: 10mm;
+    }
+
+    body {
+      
+    }
+
+    .print-button {
+      display: none !important; /* Hide print button during printing */
+    }
+  }
 </style>
 <script>
 	function printPage() {
@@ -366,40 +382,49 @@ footer {
 			
 		</div>
 		<div class="content-top-section">
-			<div style="flex-grow: 1; padding-right: 30px;">
-				<table class="data-table">
-					<tr>
-						<td class="data-group-header" colspan="2">Visitor
-							Identification Details</td>
-					</tr>
-					<tr>
-						<td>Name:</td>
-						<td><%=rs.getString("NAME")%></td>
-					</tr>
-					<tr>
-						<td>Father Name:</td>
-						<td><%=rs.getString("FATHERNAME")%></td>
-					</tr>
-					<tr>
-						<td>Age:</td>
-						<td><%=rs.getString("AGE")%></td>
-					</tr>
-					<tr>
-						<td>Contact No:</td>
-						<td><%=rs.getString("PHONE")%></td>
-					</tr>
-					<tr>
-						<td>Aadhar Card No:</td>
-						<td><%=rs.getString("AADHAR")%></td>
-					</tr>
-				</table>
-			</div>
+	<div style="flex: 1;">
+		<table class="data-table">
+	<tr>
+		<td class="data-group-header" colspan="3">Visitor Identification Details</td>
+	</tr>
 
-			<div class="photo-container-right">
-				<img src="ShowVisitor.jsp?id=<%=id%>" class="photo"
-					alt="Visitor Photo">
-			</div>
-		</div>
+	<tr>
+		<td>Name:</td>
+		<td><%=rs.getString("NAME")%></td>
+		
+		<!-- First row showing heading above image -->
+		<td rowspan="5" style="text-align:center; width:200px;">
+			
+			<img src="ShowVisitor.jsp?id=<%=id%>" class="photo" alt="Visitor Photo">
+		</td>
+	</tr>
+
+	<tr>
+		<td>Father Name:</td>
+		<td><%=rs.getString("FATHERNAME")%></td>
+	</tr>
+
+	<tr>
+		<td>Age:</td>
+		<td><%=rs.getString("AGE")%></td>
+	</tr>
+
+	<tr>
+		<td>Contact No:</td>
+		<td><%=rs.getString("PHONE")%></td>
+	</tr>
+
+	<tr>
+		<td>Aadhar Card No:</td>
+		<td><%=rs.getString("AADHAR")%></td>
+	</tr>
+</table>
+
+	</div>
+
+	
+</div>
+
 
 		<table class="data-table"
 			style="margin-top: 25px; border: 1px solid #d4e8f7; border-radius: 8px; overflow: hidden;">

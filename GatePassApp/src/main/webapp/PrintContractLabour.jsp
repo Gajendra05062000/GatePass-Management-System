@@ -112,47 +112,50 @@
 
         /* Photo & Data Layout (Matching Template's Flexbox) */
         .content-top-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            padding: 15px;
-            border: 1px solid #d4e8f7;
-        }
-
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 20px;
+	padding: 15px;
+	border: 1px solid #d4e8f7;
+	border-radius: 8px;
+	gap: 20px;
+}
         /* Photo container on the right */
         .photo-container-right {
-            flex-shrink: 0;
-            padding-top: 5px;
-            text-align: center; /* Center the image */
-        }
+	flex-shrink: 0;
+
+	padding-top: 5px;
+}
+.data-table td.photo-cell {
+    border-bottom: none !important;
+}
 
         .photo {
-        	margin-top:50px;
-        	margin-right:10px;
-            width: 140px; /* Larger photo size */
-            height: 180px;
-            border: 4px solid #1e3c72; /* Official border */
-            object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            border-radius: 6px;
-        }
+            margin-top: 30px;
+            
+
+	width: 160px;
+	height: 200px;
+	border: 4px solid #1e3c72;
+	object-fit: cover;
+
+	border-radius: 6px;
+}
 
         /* Data Table Styling (Matching Template's Table structure) */
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 0px; 
-            border: none; 
+            margin-top: 15px; 
+             
         }
 
         .data-table td {
-            padding: 10px 15px;
-            vertical-align: top;
-            border-bottom: 1px dashed #ddd; /* Light separator */
-        }
-
+	    padding: 10px 0px 10px 10px;
+	vertical-align: top;
+	border-bottom: 1px dashed #ddd;
+}
         /* Grouping Header (For Entry Details) */
         .data-group-header {
             background-color: #e3f2fd; /* Light blue background for grouping */
@@ -372,46 +375,55 @@
     </div>
     
     <div class="content-top-section">
-        <div style="flex-grow: 1; padding-right: 30px;">
-            <table class="data-table">
-                <tr>
-                    <td class="data-group-header" colspan="2">Labour Identification Details</td>
-                </tr>
-                <tr>
-                    <td>Name:</td>
-                    <td><%= rs.getString("NAME") %></td>
-                </tr>
-                <tr>
-                    <td>Father Name:</td>
-                    <td><%= rs.getString("FATHER_NAME") %></td>
-                </tr>
-                <tr>
-                    <td>Age:</td>
-                    <td><%= rs.getString("AGE") %></td>
-                </tr>
-                <tr>
-                    <td>Designation:</td>
-                    <td><%= rs.getString("DESIGNATION") %></td>
-                </tr>
-                <tr>
-                    <td>Identification Mark:</td>
-                    <td><%= rs.getString("IDENTIFICATION") %></td>
-                </tr>
-                <tr>
-                	<td>AADHAR NO.</td>
-                	<td><%=rs.getString("AADHAR") %></td>
-                </tr>
-                <tr>
-                	<td>CONTACT NO.</td>
-                	<td><%=rs.getString("PHONE") %></td>
-                </tr>
-            </table>
+        <div style="flex-grow: 1; ">
+<table class="data-table">
+    <tr>
+        <td class="data-group-header" colspan="3">Labour Identification Details</td>
+    </tr>
+
+    <tr>
+        <td>Name:</td>
+        <td><%= rs.getString("NAME") %></td>
+
+        <!-- Place Photo on the right side with label above -->
+        <td rowspan="7" class="photo-cell" style="text-align:center; width:200px;">
+    <img src="ShowImage.jsp?srNo=<%=srNo%>" class="photo" alt="Labour/Trainee Photo">
+</td>
+    </tr>
+
+    <tr>
+        <td>Father Name:</td>
+        <td><%= rs.getString("FATHER_NAME") %></td>
+    </tr>
+
+    <tr>
+        <td>Age:</td>
+        <td><%= rs.getString("AGE") %></td>
+    </tr>
+
+    <tr>
+        <td>Designation:</td>
+        <td><%= rs.getString("DESIGNATION") %></td>
+    </tr>
+
+    <tr>
+        <td>Identification Mark:</td>
+        <td><%= rs.getString("IDENTIFICATION") %></td>
+    </tr>
+
+    <tr>
+        <td>Aadhar No.:</td>
+        <td><%= rs.getString("AADHAR") %></td>
+    </tr>
+
+    <tr>
+        <td>Contact No.:</td>
+        <td><%= rs.getString("PHONE") %></td>
+    </tr>
+</table>
+
         </div>
 
-        <div class="photo-container-right">
-            <img src="ShowImage.jsp?srNo=<%= rs.getString("SER_NO") %>"
-                 class="photo" alt="Labour Photo">
-        </div>
     </div>
 
     <table class="data-table" style="margin-top: 25px; border: 1px solid #d4e8f7; border-radius: 8px; overflow: hidden;">
