@@ -565,6 +565,11 @@ to {
 								onkeypress="return /[0-9]/.test(event.key);" />
 						</div>
 						<div class="input-group">
+							<label for="idcard">Identification Card No.</label> <input
+								type="text" id="idcard" name="idcard" required
+								 />
+						</div>
+						<div class="input-group">
 							<label for="nationality">Nationality<span class="mandatory">*</span></label>
 							<input type="text" id="nationality" name="nationality" required
 								onkeyup="capLtr(this.value,'nationality');" />

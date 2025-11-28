@@ -414,7 +414,8 @@ button:hover, input[type="reset"]:hover {
 <%
 // --- Data Processing Block (Start) ---
 if ("POST".equalsIgnoreCase(request.getMethod())) {
-
+	int id = Integer.parseInt(request.getParameter("id"));
+	String previd = request.getParameter("previousId");
 	String name = request.getParameter("name");
 	String fathername = request.getParameter("fathername");
 	String address = request.getParameter("address");
@@ -428,26 +429,17 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
 	String purpose = request.getParameter("purpose");
 	String date = request.getParameter("date");
 	String time = request.getParameter("time");
+	System.out.println(time);
 	String age = request.getParameter("age");
 	String nationality = request.getParameter("nationality");
 	String department = request.getParameter("department");
+	String aadhar = request.getParameter("aadhar");
 
 	java.sql.Date sqlDate = null;
 	if (date != null && !date.isEmpty()) {
 		sqlDate = java.sql.Date.valueOf(date);
 	}
 
-	// Time parsing logic adjustment
-	java.sql.Time sqlTime = null;
-	if (time != null && !time.isEmpty()) {
-		if (time.length() == 5)
-	time += ":00";
-		try {
-	sqlTime = java.sql.Time.valueOf(time);
-		} catch (IllegalArgumentException e) {
-	System.err.println("Error parsing time: " + time);
-		}
-	}
 
 	// --- Database Insertion ---
 	Connection conn = null;
@@ -461,13 +453,9 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
 
 		// 2️⃣ Get last inserted record ID
 		st = conn.createStatement();
-		rs = st.executeQuery("SELECT MAX(ID) FROM visitor");
+		rs = null;
 
-		int id = 1;
-		if (rs.next()) {
-	int maxId = rs.getInt(1);
-	id = (rs.wasNull() ? 1 : maxId + 1);
-		}
+		
 
 		// --- 3️⃣ Image Handling (Save to disk) ---
 		String imageBase64 = request.getParameter("imageData");
@@ -494,7 +482,7 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
 
 		// 1️⃣ Insert data 
 		// NOTE: Parameter indices 13, 14, 15, 19 need careful review against table definition.
-		String sql = "INSERT INTO visitor(ID, NAME, FATHERNAME, ADDRESS, VEHICLE, DISTRICT, STATE, PINCODE, PHONE, MATERIAL, OFFICERTOMEET, PURPOSE, ENTRYDATE, \"TIME\", IMAGE, \"AGE\", NATIONALITY, DEPARTMENT,ENTRYDATE1) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO visitor(ID, NAME, FATHERNAME, ADDRESS, VEHICLE, DISTRICT, STATE, PINCODE, PHONE, MATERIAL, OFFICERTOMEET, PURPOSE, ENTRYDATE,TIME, IMAGE, \"AGE\", NATIONALITY, DEPARTMENT,ENTRYDATE1,AADHAR,PREVID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		try (FileInputStream fis = new FileInputStream(imageFile)) {
 
@@ -513,12 +501,14 @@ if ("POST".equalsIgnoreCase(request.getMethod())) {
 	ps.setString(11, officertomeet);
 	ps.setString(12, purpose);
 	ps.setDate(13, sqlDate); // ENTRYDATE
-	ps.setTime(14, sqlTime); // TIME
+	ps.setString(14, time); // TIME
 	ps.setBinaryStream(15, fis, (int) imageFile.length()); // IMAGE
 	ps.setString(16, age); // AGE
 	ps.setString(17, nationality); // NATIONALITY
 	ps.setString(18, department); // DEPARTMENT
 	ps.setDate(19, sqlDate); // ENTRYDATE1
+	ps.setString(20, aadhar); // AADHAR
+	ps.setString(21,previd);
 	
 
 	ps.executeUpdate();
@@ -606,30 +596,66 @@ gatepass.Database db1 = new gatepass.Database();
 Connection conn1 = null;
 Statement st1 = null;
 ResultSet rs1 = null;
-int displayId = 1;
+int displayId = 1; // Default to 1, or the next calculated gap
 
 try {
-	conn1 = db1.getConnection();
-	st1 = conn1.createStatement();
-	rs1 = st1.executeQuery("select max(ID) from visitor");
-	if (rs1.next()) {
-		int maxId = rs1.getInt(1);
-		displayId = (rs1.wasNull() ? 1 : maxId + 1);
-	}
+ // Assuming db1 is your Database object
+    conn1 = db1.getConnection();
+    st1 = conn1.createStatement();
+    
+    // 💡 SQL to find the lowest available ID (the first gap)
+    String sqlFindGap = 
+        "SELECT MIN(t1.ID + 1) " +
+        "FROM VISITOR t1 " +
+        "LEFT OUTER JOIN VISITOR t2 ON t1.ID + 1 = t2.ID " +
+        "WHERE t2.ID IS NULL " +
+        "AND t1.ID > 0";
+
+    rs1 = st1.executeQuery(sqlFindGap);
+
+    if (rs1.next()) {
+        int nextGap = rs1.getInt(1);
+        if (rs1.wasNull() || nextGap <= 0) {
+            // This happens if the table is empty or the query couldn't find a gap above 0.
+            // Fallback to MAX(ID) + 1 logic or just 1 if the table is truly empty.
+            
+            // Re-run the original query to safely get MAX + 1
+            rs1.close(); // Close the previous ResultSet
+            rs1 = st1.executeQuery("SELECT MAX(ID) FROM VISITOR");
+            
+            if (rs1.next()) {
+                int maxId = rs1.getInt(1);
+                // If the table is truly empty, maxId is 0 or null, so we start at 1.
+                // Otherwise, we take MAX + 1.
+                displayId = (rs1.wasNull() ? 1 : maxId + 1);
+            }
+        } else {
+            // Found a gap (e.g., ID 3 is missing, so nextGap is 3)
+            displayId = nextGap;
+        }
+    } else {
+        // Should not happen if the query is correct, but safe fallback
+        displayId = 1;
+    }
+
 } catch (SQLException e) {
-	System.err.println("Error calculating display ID: " + e.getMessage());
+    System.err.println("Database Error: " + e.getMessage());
+} catch (Exception e) {
+    System.err.println("General Error: " + e.getMessage());
 } finally {
-	if (rs1 != null) try { rs1.close(); } catch (SQLException ignore) {}
-	if (st1 != null) try { st1.close(); } catch (SQLException ignore) {}
-	if (conn1 != null) try { conn1.close(); } catch (SQLException ignore) {}
+    // ⚠️ Crucial: Close Resources
+    try { if (rs1 != null) rs1.close(); } catch (Exception ignored) {}
+    try { if (st1 != null) st1.close(); } catch (Exception ignored) {}
+    try { if (conn1 != null) conn1.close(); } catch (Exception ignored) {}
 }
 
+// The 'displayId' variable now holds the lowest available ID.
 
 // --- Date/Time Initialization ---
 LocalDate currentDate = LocalDate.now();
 LocalTime currentTime = LocalTime.now();
 String formattedDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
 %>
 </head>
 <body
@@ -679,6 +705,11 @@ String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 							<label for="age">Age<span class="mandatory">*</span></label> <input type="text" id="age"
 								name="age" size="3" required/>
 						</div>
+						
+						<div class="input-group">
+                        <label>Aadhar Card No. <span class="mandatory">*</span></label>
+                        <input type="text" id="aadhar" name="aadhar" maxlength="12" onkeypress="return /[0-9]/.test(event.key)" required/>
+                    </div>
 
 						<div class="input-group">
 							<label for="nationality">Nationality<span class="mandatory">*</span></label> <input type="text"
@@ -686,7 +717,7 @@ String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 								onkeyup="capLtr(this.value,'nationality');" readonly/>
 						</div>
 
-						<div class="input-group full-width">
+						<div class="input-group">
 							<label for="address">Address<span class="mandatory">*</span></label> <input type="text"
 								id="address" name="address"
 								onkeyup="capLtr(this.value,'address');" required />
@@ -708,15 +739,19 @@ String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     <select name="state" id="state" required>
         <option value="" disabled selected>-- Select State --</option>
         <% 
-            String[] states = {
-                "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
-                "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
-                "Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur",
-                "Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan",
-                "Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh",
-                "Uttarakhand","West Bengal","Andaman and Nicobar Islands","Chandigarh",
-                "Dadra and Nagar Haveli and Daman and Diu","Delhi","Lakshadweep","Puducherry"
-            };
+        String[] states = {
+        	    "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+        	    "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
+        	    "Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur",
+        	    "Meghalaya","Mizoram","Nagaland","Odisha","Punjab","Rajasthan",
+        	    "Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh",
+        	    "Uttarakhand","West Bengal", // 28 States
+        	    "Andaman and Nicobar Islands","Chandigarh",
+        	    "Dadra and Nagar Haveli and Daman and Diu","Delhi",
+        	    "Jammu and Kashmir", // New UT
+        	    "Ladakh", // New UT
+        	    "Lakshadweep","Puducherry" // 8 Union Territories
+        	};
 
             for (String s : states) {
         %>
@@ -783,8 +818,7 @@ String formattedTime = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 			<div class="camera-column">
 				<div class="video-container">
 					<label>Visitor Photo Capture</label>
-					<video id="video" width="320" height="240" autoplay
-						style="display: none;"></video>
+					<video id="video" width="320" height="240" autoplay style="display: none;"></video>
 					<canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
 					<img id="photoPreview" alt="Captured Photo Preview" />
 

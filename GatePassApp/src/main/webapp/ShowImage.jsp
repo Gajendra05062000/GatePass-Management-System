@@ -3,7 +3,24 @@
 <%@ page language="java" import="java.io.*" %>
 <%@ page language="java" import="gatepass.Database.*" %>
 
+<%
+    // ==========================================================
+    // 🛡️ SECURITY HEADERS TO PREVENT CACHING THIS PAGE
+    // ==========================================================
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+    response.setHeader("Pragma", "no-cache");    // HTTP 1.0.
+    response.setDateHeader("Expires", 0);        // Proxies.
 
+    // ==========================================================
+    // 🔑 SESSION AUTHENTICATION CHECK
+    // ==========================================================
+    // Check if the "username" session attribute exists (set during successful login)
+    if (session.getAttribute("username") == null) {
+        // If not authenticated, redirect to the main login page
+        response.sendRedirect("login.jsp");
+        return; // Stop processing the rest of the page
+    }
+%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" >
 <html>

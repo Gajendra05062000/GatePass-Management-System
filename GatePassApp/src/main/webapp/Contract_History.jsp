@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, gatepass.Database"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <%
     // ==========================================================
     // 🛡️ SECURITY HEADERS TO PREVENT CACHING THIS PAGE
@@ -106,7 +108,7 @@ img {
 }
 
 #contractTable td a {
-	color: #007bff;
+
 	text-decoration: none;
 	font-weight: 600;
 }
@@ -125,6 +127,20 @@ img {
 	color: red;
 	font-weight: bold;
 	padding: 20px;
+}
+.print-link {
+	text-decoration: none;
+	color: #fff;
+	background: #007bff;
+	padding: 6px 10px;
+	border-radius: 4px;
+	font-size: 13px;
+	white-space: nowrap;
+	transition: background-color 0.3s;
+}
+
+.print-link:hover {
+	background: #0056b3;
 }
 </style>
 </head>
@@ -155,6 +171,9 @@ img {
 			Statement st = null;
 			ResultSet rs = null;
 			int rowCount = 0;
+			// Proper Oracle date format
+            SimpleDateFormat oracleFormat = new SimpleDateFormat("dd-MMM-yyyy");
+            Date today = oracleFormat.parse(oracleFormat.format(new Date()));
 
 			try {
 				Database db = new Database();
@@ -164,7 +183,7 @@ img {
 				// Fetch contracts, order by ID descending (most recent first)
 				String query = "SELECT ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, "
 				+ "TO_CHAR(VALIDITY_FROM, 'DD-MON-YYYY') AS V_FROM, "
-				+ "TO_CHAR(VALIDITY_TO, 'DD-MON-YYYY') AS V_TO, " + "REGISTRATION "
+				+ "TO_CHAR(VALIDITY_TO, 'DD-MON-YYYY') AS V_TO, " + "REGISTRATION, DEPOSITED "
 				+ "FROM GATEPASS_CONTRACT ORDER BY ID DESC";
 
 				rs = st.executeQuery(query);
@@ -173,17 +192,46 @@ img {
 				while (rs.next()) {
 					rowCount++;
 					String contractId = rs.getString("ID");
+					String vf = rs.getString("V_FROM");
+                    String vt = rs.getString("V_TO");
+                    String deposited = rs.getString("DEPOSITED");   // New column
+                    String status = "Expired";
+                    String color = "style='color:red;font-weight:bold;'";
+
+                    try {
+                        if (vf != null && vt != null) {
+                            Date from = oracleFormat.parse(vf);
+                            Date to   = oracleFormat.parse(vt);
+
+                            if (!today.before(from) && !today.after(to)) {
+                            	if (deposited=="Y" || deposited=="y") {
+                                    // Gatepass taken
+                                    status = "Gatepass Taken";
+                                    color = "style='color:orange;font-weight:bold;'";
+                                } else {
+                                    // Normal Active
+                                    status = "Active";
+                                    color = "style='color:green;font-weight:bold;'";
+                                }
+                            }
+                            else {
+                                // Expired (regardless of deposited)
+                                status = "Expired";
+                                color = "style='color:red;font-weight:bold;'";
+                            }
+                        }
+                    } catch (Exception ignore) {}
 			%>
 
 			<tr data-id="<%=contractId%>">
-				<td><%=contractId%></td>
+				<td>NFL/CISF/CONTRACT/0<%=contractId%><span <%= color %>> (<%= status %>) </span></td>
 				<td><%=rs.getString("CONTRACT_NAME")%></td>
 				<td><%=rs.getString("CONTRACTOR_NAME")%></td>
 				<td><%=rs.getString("DEPARTMENT")%></td>
 				<td><%=rs.getString("V_FROM")%></td>
 				<td><%=rs.getString("V_TO")%></td>
 				<td><%=rs.getString("REGISTRATION")%></td>
-				<td class="action-cell"><a
+				<td class="action-cell"><a class="print-link"
 					href="PrintContract.jsp?id=<%=contractId%>"
 					onclick="return printPagePopUp(this.href);"> View Contract </a></td>
 			</tr>

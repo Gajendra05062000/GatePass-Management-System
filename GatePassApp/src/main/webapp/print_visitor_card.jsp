@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*,gatepass.Database"%>
+<%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,28 +26,33 @@ body {
 	font-size: 14px;
 	background-color: #fff;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-	/* Stronger shadow for screen view */
 	border-radius: 12px;
 }
 
-/* --- PROFESSIONAL HEADER STRUCTURE --- */
+/* ------------------------------------------- */
+/* --- 🚀 REVISED PROFESSIONAL HEADER STRUCTURE --- */
+/* ------------------------------------------- */
 .header-report {
-	border-bottom: 3px solid #1e3c72; /* Dark blue primary line */
-	padding-bottom: 15px;
-	margin-bottom: 25px;
+	border-bottom: 3px solid #1e3c72;
+	padding-bottom: 5px;
+	margin-bottom: 10px;
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	align-items: flex-start;
+	flex-wrap: wrap;
 }
 
 .logo-container {
-	width: 80px;
+	/* Increased container width */
+	width: 110px; 
+	flex-shrink: 0;
 	text-align: center;
 }
 
 .logo-container img {
-	width: 65px; /* Slightly larger logo */
-	height: 65px;
+	/* ➡️ INCREASED LOGO SIZE FOR SCREEN VIEW */
+	width: 100px; 
+	height: 100px;
 	display: block;
 	margin: 0 auto;
 	object-fit: contain;
@@ -60,47 +66,73 @@ body {
 
 .header-title-area h3 {
 	margin: 0;
-	font-size: 24px; /* Largest title */
+	font-size: 30px;
 	color: #1e3c72;
 	text-transform: uppercase;
-	letter-spacing: 1.5px;
-	font-weight: 700;
+	letter-spacing: 2px;
+	font-weight: 800;
+	line-height: 1.2;
 }
 
 .header-title-area p {
 	margin: 5px 0 0 0;
-	font-size: 15px;
+	font-size: 16px;
 	color: #555;
 	font-weight: 500;
 }
+
+/* --- NEW: METADATA BLOCK for Pass No. and Date --- */
+.metadata-block {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 0;
+	margin-top: 10px;
+	border-top: 1px dashed #ccc;
+}
+
+.metadata-item {
+	font-size: 13px;
+	font-weight: 600;
+	color: #333;
+	padding: 0 5px;
+}
+
+.metadata-item strong {
+	color: #1e3c72;
+	margin-right: 5px;
+}
+
+.metadata-item .pass-number {
+	font-size: 16px;
+	font-weight: 800;
+	color: #cc0000;
+}
+
 /* --- END HEADER STRUCTURE --- */
 
-/* Photo & Signature Section (renamed to content-top-section for clarity) */
-/* ➡️ MODIFIED: Flex order changed to put photo on right, aligned vertically */
+/* Photo & Signature Section */
 .content-top-section {
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-start; /* Align items to the top */
+	align-items: flex-start;
 	margin-bottom: 20px;
-	/* Added background for visual cohesion with identification data */
-	/*  background-color: #e3f2fd; /* Same as data-group-header */ */
-	border-radius: 8px; /* Match card radius */
-	padding: 15px; /* Internal padding */
-	border: 1px solid #d4e8f7; /* Lighter border for this section */
+	border-radius: 8px;
+	padding: 15px;
+	border: 1px solid #d4e8f7;
 }
 
-/* Photo container on the right */
 .photo-container-right {
-	flex-shrink: 0; /* Don't shrink photo */
-	margin-left: 30px; /* Space from text */
-	padding-top: 5px; /* Adjust vertical alignment if needed */
+	flex-shrink: 0;
+	margin-left: 30px;
+	padding-top: 5px;
 }
 
 .photo {
-	margin-top: 30px;
-	width: 140px; /* Larger photo size */
+	margin-top: 5px;
+	width: 140px;
 	height: 180px;
-	border: 4px solid #1e3c72; /* Official border */
+	border: 4px solid #1e3c72;
 	object-fit: cover;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	border-radius: 6px;
@@ -114,20 +146,20 @@ body {
 }
 
 .data-table td {
-	padding: 10px 15px; /* Increased padding */
+	padding: 10px 15px;
 	vertical-align: top;
-	border-bottom: 1px dashed #ddd; /* Light separator */
+	border-bottom: 1px dashed #ddd;
 }
 
 /* Grouping Header (For Entry Details) */
 .data-group-header {
-	background-color: #e3f2fd; /* Light blue background for grouping */
+	background-color: #e3f2fd;
 	font-weight: bold;
 	color: #1e3c72;
 	padding: 8px 15px !important;
 	border-bottom: 2px solid #1e3c72 !important;
 	font-size: 16px;
-	-webkit-print-color-adjust: exact; /* Ensure background prints */
+	-webkit-print-color-adjust: exact;
 	color-adjust: exact;
 }
 
@@ -136,8 +168,8 @@ body {
 	font-weight: 600;
 	color: #444;
 	width: 25%;
-	background-color: #f7f7f7; /* Light shading for labels */
-	-webkit-print-color-adjust: exact; /* Ensure background prints */
+	background-color: #f7f7f7;
+	-webkit-print-color-adjust: exact;
 	color-adjust: exact;
 }
 /* Field Values (Second Column) */
@@ -146,16 +178,9 @@ body {
 	font-weight: 500;
 }
 
-/* Highlighting Key Pass Number */
-.pass-number {
-	font-size: 18px;
-	font-weight: 800;
-	color: #cc0000; /* Red emphasis */
-}
-
 /* Signature Area */
 .signature-row {
-	height: 60px; /* Space for signatures */
+	height: 60px;
 	border-top: 2px solid #ccc;
 	margin-top: 40px;
 	padding-top: 15px;
@@ -164,7 +189,7 @@ body {
 }
 
 .signature-box {
-	width: 45%;
+	width: 30%;
 	text-align: center;
 	font-size: 14px;
 	font-weight: 600;
@@ -174,7 +199,7 @@ body {
 .signature-line {
 	border-top: 1px solid #000;
 	margin-bottom: 5px;
-	height: 1px; /* Ensure line visibility */
+	height: 1px;
 }
 
 .instructions {
@@ -184,7 +209,7 @@ body {
 	border: 1px solid #1e3c72;
 	background-color: #f0f5ff;
 	border-radius: 4px;
-	-webkit-print-color-adjust: exact; /* Ensure background prints */
+	-webkit-print-color-adjust: exact;
 	color-adjust: exact;
 }
 
@@ -205,7 +230,7 @@ body {
 	transition: background-color 0.3s;
 }
 
-/* --- PRINT OPTIMIZATION --- */
+/* --- PRINT OPTIMIZATION (A5 friendly) --- */
 @media print {
 	.print-container {
 		display: none;
@@ -226,17 +251,36 @@ body {
 	.data-table td:first-child, .data-group-header, .instructions,
 		.content-top-section {
 		background-color: #f7f7f7 !important;
-		/* Keep shading for print contrast */
 		-webkit-print-color-adjust: exact;
 		color-adjust: exact;
 	}
+	/* ➡️ INCREASED LOGO SIZE FOR PRINTING */
+	.logo-container img {
+		width: 90pt !important; 
+		height: 90pt !important;
+	}
+	
+	/* Adjust header text size for A5 legibility */
+	.header-title-area h3 {
+		font-size: 20pt !important; 
+	}
+	.header-title-area p {
+		font-size: 10pt !important;
+	}
+	
+	.metadata-item {
+	    font-size: 10pt !important;
+	}
+	.metadata-item .pass-number {
+	    font-size: 13pt !important;
+	}
+	
 	@page {
-		size: A4;
-		margin: 15mm;
+		size: A5 portrait; /* Target A5 size */
+		margin: 10mm;
 	}
 	footer {
 		position: relative;
-		/* Allow it to flow naturally at the end of the report */
 		margin-top: 30px;
 	}
 }
@@ -263,6 +307,12 @@ footer {
 <body>
 	<%
 	String id = request.getParameter("id");
+	
+	// Get current date for "Issued On" field
+	LocalDateTime now = LocalDateTime.now();
+	// Corrected date format pattern
+	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy"); 
+	String printDate = now.format(dateFormatter);
 
 	if (id == null || id.trim().isEmpty()) {
 	%>
@@ -279,7 +329,7 @@ footer {
 		st = conn.createStatement();
 
 		String query = "SELECT NAME, FATHERNAME, TO_CHAR(ENTRYDATE, 'DD-MON-YYYY') AS ENTRYDATE, VEHICLE, DISTRICT, STATE, PINCODE, PHONE, PURPOSE, "
-		+ "TO_CHAR(SYSDATE, 'DD-MON-YYYY') AS CURR_DATE,AGE , TIME,OFFICERTOMEET " + "FROM visitor WHERE ID=" + id;
+		+ "TO_CHAR(SYSDATE, 'DD-MON-YYYY') AS CURR_DATE,AGE , TIME,OFFICERTOMEET,AADHAR " + "FROM visitor WHERE ID=" + id;
 
 		rs = st.executeQuery(query);
 		if (rs.next()) {
@@ -287,38 +337,40 @@ footer {
 
 
 	<div class="card">
-		<!-- DUAL LOGO HEADER -->
 		<div class="header-report">
-			<!-- LEFT LOGO (NFL) -->
 			<div class="logo-container">
 				<img src="logo1.png" alt="NFL Logo">
 			</div>
 
-			<!-- CENTERED TITLE AREA -->
 			<div class="header-title-area">
 				<h3>VISITOR GATE PASS</h3>
-				<p>CISF Gate Pass Management System | NFL Panipat</p>
+				<p>CISF Gate Pass Management System
+				</p>
+				<p> NFL Panipat Unit</p>
 			</div>
 
-			<!-- RIGHT LOGO (CISF) -->
 			<div class="logo-container">
 				<img src="logo2.png" alt="CISF Logo">
 			</div>
+			
+			<div class="metadata-block">
+			    <div class="metadata-item">
+				    <strong>VISITOR PASS NO:</strong>
+				    <span class="pass-number">NFL/CISF/VISITOR/0<%=id%></span>
+				</div>
+				<div class="metadata-item">
+				    <strong>ISSUED ON:</strong>
+				    <%= rs.getString("ENTRYDATE")%>
+				</div>
+			</div>
+			
 		</div>
-		<!-- END HEADER -->
-		<!-- PHOTO & DATA SECTION -->
-		<!-- ➡️ MODIFIED: Flex order reversed, photo moved to right -->
 		<div class="content-top-section">
-			<!-- 1. CORE DETAILS TABLE (now on left) -->
 			<div style="flex-grow: 1; padding-right: 30px;">
 				<table class="data-table">
 					<tr>
 						<td class="data-group-header" colspan="2">Visitor
 							Identification Details</td>
-					</tr>
-					<tr>
-						<td>Pass No:</td>
-						<td><span class="pass-number"><%=id%></span></td>
 					</tr>
 					<tr>
 						<td>Name:</td>
@@ -336,17 +388,19 @@ footer {
 						<td>Contact No:</td>
 						<td><%=rs.getString("PHONE")%></td>
 					</tr>
+					<tr>
+						<td>Aadhar Card No:</td>
+						<td><%=rs.getString("AADHAR")%></td>
+					</tr>
 				</table>
 			</div>
 
-			<!-- 2. PHOTO (now on right) -->
 			<div class="photo-container-right">
 				<img src="ShowVisitor.jsp?id=<%=id%>" class="photo"
 					alt="Visitor Photo">
 			</div>
 		</div>
 
-		<!-- ENTRY & ADDRESS DETAILS TABLE -->
 		<table class="data-table"
 			style="margin-top: 25px; border: 1px solid #d4e8f7; border-radius: 8px; overflow: hidden;">
 			<tr>
@@ -376,19 +430,24 @@ footer {
 			</tr>
 		</table>
 
-		<!-- SIGNATURE AREA -->
 		<div class="signature-row">
 			<div class="signature-box">
 				<br>
 				<br>
 				<div class="signature-line"></div>
-				Visitor's Signature (Card Holder)
-			</div>
+				Signature of Visitor
+			</div>&nbsp;
 			<div class="signature-box">
 				<br>
 				<br>
 				<div class="signature-line"></div>
-				Issuing Authority Signature
+				Signature of Officer Whom to Meet
+			</div>&nbsp;
+			<div class="signature-box">
+				<br>
+				<br>
+				<div class="signature-line"></div>
+				Signature of Issuing Authority
 			</div>
 		</div>
 
@@ -401,7 +460,7 @@ footer {
 	</div>
 	<div class="print-container">
 		<button id="printPageButton" class="print-button"
-			onclick="printPage()">Print Visitor Gate Pass</button>
+			onclick="printPage()">🖨️ Print Visitor Gate Pass</button>
 	</div>
 
 	<%

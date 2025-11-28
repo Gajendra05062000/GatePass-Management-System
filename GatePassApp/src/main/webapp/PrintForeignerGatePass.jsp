@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*,java.sql.*,java.io.*,gatepass.Database"%>
+<%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE HTML>
 <html>
@@ -18,32 +19,36 @@ body {
 /* Report Container (Full Report/Document Layout) */
 .card {
     width: 100%;
-    max-width: 850px; /* Matched the template width */
+    max-width: 850px; 
     padding: 35px;
     margin: 20px auto;
     border: 1px solid #cce;
     font-size: 14px;
     background-color: #fff;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1); /* Stronger shadow for screen view */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
     border-radius: 12px;
 }
 
-/* --- PROFESSIONAL HEADER STRUCTURE (Copied from Template) --- */
+/* --- REVISED PROFESSIONAL HEADER STRUCTURE --- */
 .header-report {
-    border-bottom: 3px solid #1e3c72; /* Dark blue primary line */
+    border-bottom: 3px solid #1e3c72; 
     padding-bottom: 15px;
     margin-bottom: 25px;
     display: flex;
+    flex-wrap: wrap; 
     justify-content: space-between;
     align-items: center;
 }
 .logo-container {
-    width: 80px;
+    /* Adjusted container width */
+    width: 110px; 
     text-align: center;
+    flex-shrink: 0;
 }
 .logo-container img {
-    width: 65px; /* Slightly larger logo */
-    height: 65px;
+    /* 🚀 INCREASED LOGO SIZE FOR SCREEN VIEW */
+    width: 100px; 
+    height: 100px;
     display: block;
     margin: 0 auto;
     object-fit: contain;
@@ -55,7 +60,7 @@ body {
 }
 .header-title-area h3 {
     margin: 0;
-    font-size: 24px; /* Largest title */
+    font-size: 26px; /* Larger title */
     color: #1e3c72;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -63,11 +68,46 @@ body {
 }
 .header-title-area p {
     margin: 5px 0 0 0;
-    font-size: 15px;
+    font-size: 16px; /* Larger subtitle */
     color: #555;
     font-weight: 500;
 }
 /* --- END HEADER STRUCTURE --- */
+
+
+/* --- NEW: METADATA TOP BLOCK (ID and Date) --- */
+.metadata-top {
+    width: 100%; 
+    display: flex;
+    justify-content: space-between;
+    
+    /* 💡 ADDED DOTTED LINE HERE (ABOVE) */
+    border-top: 1px dotted #888; 
+    
+    /* Adjusted padding to fit line above */
+    padding: 15px 0 10px 0; 
+    margin-top: 15px;
+    order: 3; 
+}
+.metadata-top-item {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+    background-color: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+.metadata-top-item strong {
+    color: #1e3c72;
+    margin-right: 5px;
+}
+.metadata-top-item .pass-number {
+    font-size: 17px; 
+    font-weight: 800;
+    color: #cc0000;
+}
+/* --- END METADATA BLOCK --- */
 
 
 /* Photo & Data Layout (Matching Template's Flexbox) */
@@ -141,13 +181,6 @@ body {
     background-color: transparent !important;
 }
 
-/* Highlighting Key Pass Number */
-.pass-number {
-    font-size: 18px;
-    font-weight: 800;
-    color: #cc0000; /* Red emphasis */
-}
-
 /* Signature Area */
 .signature-row {
     height: 60px; /* Space for signatures */
@@ -214,11 +247,21 @@ body {
         margin: 0;
         padding: 0;
     }
+    /* 🚀 INCREASED LOGO SIZE FOR PRINTING */
+    .logo-container img {
+        width: 90pt !important; 
+        height: 90pt !important;
+    }
+    
     /* Ensure shaded backgrounds print */
-    .data-table td:first-child, .data-group-header, .instructions, .content-top-section {
+    .data-table td:first-child, .data-group-header, .instructions, .content-top-section, .metadata-top-item {
         background-color: #f7f7f7 !important; /* Keep shading for print contrast */
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
+    }
+    .metadata-top {
+        /* Ensure dotted line prints correctly */
+        border-top: 1pt dotted #888 !important; 
     }
     @page {
         size: A4;
@@ -262,6 +305,13 @@ function printPagePopUp(refNo) {
 
 <%
 String srNo = request.getParameter("srNo");
+
+// Get current date for "Issued On" field
+java.time.LocalDateTime now = java.time.LocalDateTime.now();
+// Using correct date pattern (dd-MMM-yyyy)
+java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yyyy"); 
+String printDate = now.format(dateFormatter);
+
 if (srNo == null || srNo.trim().isEmpty()) {
 %>
 <p style="color:red;text-align:center;">Error: Missing or invalid Gate Pass Serial Number.</p>
@@ -275,7 +325,7 @@ if (srNo == null || srNo.trim().isEmpty()) {
         conn = db.getConnection();
         st = conn.createStatement();
         String qry = "SELECT SER_NO,VISIT_DEPT,WORKSITE,NAME,FATHER_NAME,AGE,PHONE,LOCAL_ADDRESS,PERMANENT_ADDRESS,NATIONALITY,"
-                   + "TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY'),TO_CHAR(VALIDITY_TO,'DD-MON-YYYY'),TO_CHAR(UPDATE_DATE,'DD-MON-YYYY') "
+                   + "TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY'),TO_CHAR(VALIDITY_TO,'DD-MON-YYYY'),TO_CHAR(UPDATE_DATE,'DD-MON-YYYY'),IDCARD "
                    + "FROM GATEPASS_FOREIGNER WHERE SER_NO='" + srNo + "'";
         // System.out.println("Select all data from Qry--" + qry); // Kept original print statement commented out
         rs = st.executeQuery(qry);
@@ -283,9 +333,7 @@ if (srNo == null || srNo.trim().isEmpty()) {
         if (rs.next()) {
 %>
 
-<div class="print-container">
-    <button id="printPageButton" class="print-button" onclick="printPage()">🖨️ Print Foreigner Gate Pass</button>
-</div>
+
 
 <div class="card">
     <div class="header-report">
@@ -301,16 +349,24 @@ if (srNo == null || srNo.trim().isEmpty()) {
         <div class="logo-container">
             <img src="logo2.png" alt="CISF Logo">
         </div>
+        
+        <div class="metadata-top">
+            <div class="metadata-top-item" style="margin-right: auto;">
+                <strong>PASS NO:</strong>
+                <span class="pass-number">NFL/CISF/FOREIGNER/0<%= rs.getString(1) %></span>
+            </div>
+            <div class="metadata-top-item" style="margin-left: auto;">
+                <strong>Issued On:</strong>
+                <%= printDate %>
+            </div>
+        </div>
+        
     </div>
     <div class="content-top-section">
         <div style="flex-grow: 1; padding-right: 30px;">
             <table class="data-table">
                 <tr>
                     <td class="data-group-header" colspan="2">Foreigner Identification Details</td>
-                </tr>
-                <tr>
-                    <td>Pass No:</td>
-                    <td><span class="pass-number"><%= rs.getString(1) %></span></td>
                 </tr>
                 <tr>
                     <td>Name:</td>
@@ -322,15 +378,17 @@ if (srNo == null || srNo.trim().isEmpty()) {
                 </tr>
                 <tr>
                     <td>Nationality:</td>
-                    <td><%= rs.getString(11) %></td>
-                </tr>
+                    <td><%= rs.getString(10) %></td> </tr>
                 <tr>
                     <td>Age:</td>
-                    <td><%= rs.getString(8) %></td>
-                </tr>
+                    <td><%= rs.getString(6) %></td> </tr>
                 <tr>
                     <td>Contact No.:</td>
                     <td><%= rs.getString(7) %></td>
+                </tr>
+                <tr>
+                    <td>ID Card No.:</td>
+                    <td><%= rs.getString(14) %></td>
                 </tr>
             </table>
         </div>
@@ -355,18 +413,18 @@ if (srNo == null || srNo.trim().isEmpty()) {
         </tr>
         <tr>
             <td>Local Address:</td>
-            <td><%= rs.getString(9) %></td>
+            <td><%= rs.getString(8) %></td>
         </tr>
         <tr>
             <td>Permanent Address:</td>
-            <td><%= rs.getString(10) %></td>
+            <td><%= rs.getString(9) %></td>
         </tr>
         <tr>
             <td>Valid From / Upto:</td>
-            <td><%= rs.getString(11) %> to <%= rs.getString(12) %></td>
+            <td><span style="color:green; font-weight: 600;">FROM: <%= rs.getString(11) %></span> <span style="color:red; margin-left: 15px;">TO: <%= rs.getString(12) %></span></td>
         </tr>
         <tr>
-            <td>Date of Issue:</td>
+            <td>Date of Pass Generation:</td>
             <td><%= rs.getString(13) %></td>
         </tr>
     </table>
@@ -407,6 +465,9 @@ if (srNo == null || srNo.trim().isEmpty()) {
     }
 }
 %>
+<div class="print-container">
+    <button id="printPageButton" class="print-button" onclick="printPage()">🖨️ Print Foreigner Gate Pass</button>
+</div>
 <footer>Printed on <%= new java.util.Date() %> | © 2025 Gate Pass Management System | NFL Panipat</footer>
 </body>
 </html>

@@ -139,7 +139,7 @@
                 <select id="supportSubject" name="supportSubject" onchange="updateMessageBody()" required>
                     <option value="" disabled selected>--- Select an Issue Type ---</option>
                     <option value="DATABASE_ERROR">Database Error / Data Issue</option>
-                    <option value="CAMERA_ISSUE">Camera / Photo Capture Problem</h3</option>
+                    <option value="CAMERA_ISSUE">Camera / Photo Capture Problem</h3></option>
                     <option value="LOGIN_FAILURE">Login / Authentication Problem</option>
                     <option value="FEATURE_REQUEST">Feature Request / Suggestion</option>
                     <option value="GENERAL_FEEDBACK">General Feedback</option>

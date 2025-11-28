@@ -1,6 +1,14 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page language="java" import="java.util.*, gatepass.Database" %>
 <%@ page import="java.sql.*,java.time.*,java.time.format.DateTimeFormatter,java.io.*,java.util.Base64,gatepass.CommonService"%>
+<script>
+    // **CRITICAL FIX:** Checks if this page is inside an iframe.
+    // If it is, it forces the TOP-level window to redirect to the login page, 
+    // breaking out of the frame structure.
+    if (window.self !== window.top) {
+        window.top.location.href = window.location.href;
+    }
+</script>
 
 <%
     // ==========================================================
@@ -491,6 +499,7 @@ function changePassword() {
                 <a href="#" class="main-link">📝 Contract</a>
                 <div class="dropdown-content">
                     <a href="Contract.jsp" target="right">Contract Registration</a>
+                    <a href="UpdateContract.jsp" target="right">Update Contract Details</a>
                     <a href="Contract_History.jsp" target="right">Contract History</a>
                 </div>
             </li>
@@ -500,12 +509,12 @@ function changePassword() {
                 <div class="dropdown-content">
                 
                     <a href="visitor.jsp" target="right">Visitor Gatepass</a>
-                    <a href="Viewall1.jsp" target="right">View All Visitors</a>
-                    <a href="selectid.jsp" target="right">Visitor Revisit</a>
-                    <a href="view.jsp" target="right">View by Date</a>
-                    <a href="selectname.jsp" target="right">View by Officer to Meet</a>
-                    <a href="selectstate.jsp" target="right">View by State</a>
-                    <!-- <a href="viewall.jsp" target="right">View All Visitors</a> -->
+                    <a href="viewall.jsp" target="right">View All Visitors</a>
+                    <a href="visitor_revisit.jsp" target="right">Visitor Revisit</a>
+                    <a href="viewbydate.jsp" target="right">View by Date</a>
+                    <a href="viewbyname.jsp" target="right">View by Officer to Meet</a>
+                    <a href="viewbystate.jsp" target="right">View by State</a>
+
                 </div>
             </li>
             <li>
@@ -513,6 +522,7 @@ function changePassword() {
                 <div class="dropdown-content">
                     <a href="ContractLabour.jsp" target="right">Contract Labour/Trainee Gate Pass</a>
                     <a href="ContractLabourHistory.jsp" target="right">Contract Labour/Traine Pass History</a>
+                    <a href="labourpass_deposition.jsp" target="right">Deposit Contract Labour/Trainee Pass </a>
                 </div>
             </li>
             <li>
@@ -520,6 +530,7 @@ function changePassword() {
                 <div class="dropdown-content">
                     <a href="ForeignerGatepass.jsp" target="right">Foreigner Gate Pass</a>
                     <a href="ForeignerGatepassHistory.jsp" target="right">Foreigner Pass History</a>
+                    <a href="Foreignpass_deposition.jsp" target="right">Deposit Foreigner Pass</a>
                 </div>
             </li>
         </ul>
@@ -582,7 +593,7 @@ function changePassword() {
 
 <div class="footer">
     <% if (loginSuccess) { %>
-        <img src="logo2.png" alt="CISF Logo">
+        <img src="logo2.png" class="logo" alt="NFL Logo" onclick="window.open('http://10.3.122.199/', '_blank');">
         &nbsp;
     <% } %>
     <p>&copy; <%= java.time.Year.now() %>, IT Department NFL, Panipat</p>

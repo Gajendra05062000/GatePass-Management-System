@@ -75,7 +75,7 @@ try {
     
     try {
         connContract = db.getConnection();
-        String sql = "SELECT ID, CONTRACT_NAME FROM GATEPASS_CONTRACT ORDER BY ID ASC";
+        String sql = "SELECT ID, CONTRACT_NAME, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM, TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO FROM GATEPASS_CONTRACT ORDER BY ID ASC";
         stContract = connContract.createStatement();
         rsContract = stContract.executeQuery(sql);
         
@@ -84,13 +84,22 @@ try {
         while (rsContract.next()) {
             String contractId = rsContract.getString("ID");
             String contractName = rsContract.getString("CONTRACT_NAME");
-            
-            // Embed the full descriptive string into the option's VALUE
+            String vFrom = rsContract.getString("VALIDITY_FROM");
+            String vTo   = rsContract.getString("VALIDITY_TO");
+
             String contractDisplayValue = "(" + contractId + ") " + contractName;
 
-            contractOptionsHtml.append("<option value=\"").append(contractDisplayValue).append("\">")
-            .append(" (").append(contractId).append(") ").append(contractName).append("</option>");
+            contractOptionsHtml.append("<option value=\"")
+                .append(contractDisplayValue)
+                .append("\" data-vfrom=\"").append(vFrom)
+                .append("\" data-vto=\"").append(vTo)
+                .append("\">(")
+                .append(contractId).append(") ")
+                .append(contractName).append("( Validity From ").append(vFrom).append(" To ")
+                .append(vTo).append(")")
+                .append("</option>");
         }
+
         String other="OTHER";
 
 
@@ -567,6 +576,52 @@ function extractContractId(displayValue) {
     }
     return null;
 }
+function checkValidityFromLimit() {
+    const contractSelect = document.getElementById("contractId");
+    const selectedOption = contractSelect.options[contractSelect.selectedIndex];
+
+    const labourFromDate = document.getElementById("valdity_fromDate").value;
+    if (!labourFromDate) return;  // Ensure the field is not empty
+
+    const contractFrom = selectedOption.getAttribute("data-vfrom");
+    if (!contractFrom) return;  // Ensure contract validity "From" date exists
+
+    const labourFrom = new Date(labourFromDate);
+    const cFrom = new Date(contractFrom);
+
+    // Check if the 'labourFrom' is before 'contractFrom'
+    if (labourFrom < cFrom) {
+        displayCustomAlert(
+            "❌ Validity From Date cannot be earlier than the Contract Validity From Date (" + cFrom.toLocaleDateString() + ")",
+            "error"
+        );
+        document.getElementById("valdity_fromDate").value = "";  // Clear the input field
+    }
+}
+
+function checkValidityToLimit() {
+    const contractSelect = document.getElementById("contractId");
+    const selectedOption = contractSelect.options[contractSelect.selectedIndex];
+
+    const labourToDate = document.getElementById("valdity_toDate").value;
+    if (!labourToDate) return;  // Ensure the field is not empty
+
+    const contractTo = selectedOption.getAttribute("data-vto");
+    if (!contractTo) return;  // Ensure contract validity "To" date exists
+
+    const labourTo = new Date(labourToDate);
+    const cTo = new Date(contractTo);
+
+    // Check if 'labourTo' exceeds 'contractTo'
+    if (labourTo > cTo) {
+        displayCustomAlert(
+            "❌ Validity To Date cannot exceed the Contract Validity To Date (" + cTo.toLocaleDateString() + ")",
+            "error"
+        );
+        document.getElementById("valdity_toDate").value = "";  // Clear the input field
+    }
+}
+
 
 function checkContractLimit(displayValue) {
     const contractId = extractContractId(displayValue);
@@ -824,7 +879,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <!-- Contract Selection Field -->
                 <div class="input-group">
     <label for="contractId">Contract Name / No.<span class="mandatory">*</span></label>
-    <select id="contractId" name="contractId" required onchange="checkContractLimit(this.value)">
+    <select id="contractId" name="contractId" required 
+        onchange="checkContractLimit(this.value); checkValidityToLimit();">
+
         <%= contractOptionsHtml.toString() %>
     </select>
 </div>
@@ -932,11 +989,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="validity-group">
                         <div class="input-group" style="margin-bottom: 0;">
                             <label for="valdity_fromDate">From:</label>
-                            <input type="date" id="valdity_fromDate" name="valdity_fromDate" required/>
+                            <input type="date" id="valdity_fromDate" name="valdity_fromDate" onchange="checkValidityFromLimit()" required/>
                         </div>
                         <div class="input-group" style="margin-bottom: 0;">
                             <label for="valdity_toDate">To:</label>
-                            <input type="date" id="valdity_toDate" name="valdity_toDate" required/>
+                            <input type="date" id="valdity_toDate" name="valdity_toDate" onchange="checkValidityToLimit()" required/>
+
                         </div>
                     </div>
                 </div>

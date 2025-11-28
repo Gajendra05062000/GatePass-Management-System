@@ -1,10 +1,11 @@
 <%@ page import="java.sql.*,gatepass.Database" %>
+<%@ page import="java.time.LocalDateTime, java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Contract Registration Pass </title>
+<title>Contract Registration Pass</title>
 
 <style>
 /* Base Reset and Typography */
@@ -23,7 +24,7 @@ body {
     padding: 30px;
     margin: 20px auto;
     border: 1px solid #cce;
-    font-size: 16px; /* Increased Base Font Size */
+    font-size: 16px; 
     background-color: #fff;
     box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
     border-radius: 12px;
@@ -31,21 +32,25 @@ body {
 
 /* --- PROFESSIONAL HEADER STRUCTURE (Dual Logo) --- */
 .header-report {
-    border-bottom: 3px solid #1e3c72; /* Dark blue primary line */
+    /* Main solid line below the titles/logos */
+    border-bottom: 3px solid #1e3c72; 
     padding-bottom: 15px;
     margin-bottom: 25px;
     
     display: flex;
+    flex-wrap: wrap; 
     justify-content: space-between; 
     align-items: center;
 }
 .logo-container {
-    width: 80px; 
+    width: 110px; 
     text-align: center;
+    flex-shrink: 0;
 }
 .logo-container img {
-    width: 65px; 
-    height: 65px;
+    /* INCREASED LOGO SIZE FOR SCREEN VIEW */
+    width: 100px; 
+    height: 100px;
     display: block;
     margin: 0 auto;
     object-fit: contain;
@@ -57,7 +62,7 @@ body {
 }
 .header-title-area h3 {
     margin: 0;
-    font-size: 26px; /* Larger Title Font */
+    font-size: 26px; 
     color: #1e3c72;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -71,25 +76,62 @@ body {
 }
 /* --- END HEADER STRUCTURE --- */
 
+/* --- NEW: METADATA TOP BLOCK (ID and Date) --- */
+.metadata-top {
+    width: 100%; 
+    display: flex;
+    justify-content: space-between;
+    
+    /* 💡 ADDED DOTTED LINE HERE (ABOVE) */
+    border-top: 1px dotted #888; 
+    
+    /* Adjusted padding to fit line above */
+    padding: 15px 0 10px 0; 
+    margin-top: 15px;
+    order: 3; 
+    
+    /* Removed redundant border-bottom from previous version */
+    /* border-bottom: none; */ 
+}
+.metadata-top-item {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
+    background-color: #f7f7f7;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+.metadata-top-item strong {
+    color: #1e3c72;
+    margin-right: 5px;
+}
+.metadata-top-item .pass-number {
+    font-size: 17px; 
+    font-weight: 800;
+    color: #cc0000;
+}
+
 /* Data Table Styling */
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
-    border: 1px solid #d4e8f7; /* Light border around the main data block */
+    /* Removed top margin since the metadata block already provides separation */
+    margin-top: 0; 
+    border: 1px solid #d4e8f7; 
     border-radius: 8px;
     overflow: hidden;
 }
 
 .data-table td {
-    padding: 12px 15px; /* Increased padding */
+    padding: 12px 15px; 
     vertical-align: top;
-    border-bottom: 1px dashed #ddd; /* Light separator */
+    border-bottom: 1px dashed #ddd; 
 }
 
 /* Grouping Header */
 .data-group-header {
-    background-color: #e3f2fd !important; /* Light blue background */
+    background-color: #e3f2fd !important; 
     font-weight: bold;
     color: #1e3c72;
     padding: 10px 15px !important; 
@@ -103,8 +145,8 @@ body {
 .data-table td:nth-child(odd) {
     font-weight: 600;
     color: #444;
-    width: 25%; /* Label width */
-    background-color: #f7f7f7; /* Light shading for labels */
+    width: 25%; 
+    background-color: #f7f7f7; 
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
 }
@@ -112,14 +154,7 @@ body {
 .data-table td:nth-child(even) {
     color: #000;
     font-weight: 500;
-    width: 25%; /* Value width */
-}
-
-/* Highlighting Key Contract ID */
-.pass-number {
-    font-size: 20px; 
-    font-weight: 800;
-    color: #cc0000; /* Red emphasis */
+    width: 25%; 
 }
 
 /* * --- SIGNATURE AREA STYLING --- */
@@ -128,22 +163,22 @@ body {
     padding-top: 20px;
     
     display: flex;
-    justify-content: space-around; /* Use space-around for balanced spacing */
-    align-items: flex-end; /* Align contents to the bottom */
-    border-top: 2px solid #ccc; /* Separator line */
+    justify-content: space-around; 
+    align-items: flex-end; 
+    border-top: 2px solid #ccc; 
 }
 
-.signature-area > div { /* Target the inner divs acting as signature boxes */
+.signature-area > div { 
     text-align: center;
     font-size: 16px; 
     font-weight: 600;
     color: #333;
-    width: 45%; /* Give each box a defined width */
+    width: 45%; 
 }
 
 .signature-line {
     border-top: 1px solid #000;
-    margin-bottom: 5px; /* Reduced space between line and text */
+    margin-bottom: 5px; 
     height: 1px;
 }
 
@@ -151,14 +186,14 @@ body {
 .instructions-area {
     margin-top: 40px;
     padding: 20px;
-    border: 1px solid #1e3c72; /* Dark blue border */
+    border: 1px solid #1e3c72; 
     border-radius: 8px;
-    background-color: #fff3e0; /* Light orange/yellow background for caution/notes */
+    background-color: #fff3e0; 
 }
 
 .instructions-area h4 {
     margin-top: 0;
-    color: #e65100; /* Darker orange title */
+    color: #e65100; 
     font-size: 18px;
     border-bottom: 1px solid #e65100;
     padding-bottom: 5px;
@@ -220,20 +255,40 @@ body {
     }
     
     /* Ensure shaded backgrounds print */
-    .data-table td:nth-child(odd), .data-group-header {
+    .data-table td:nth-child(odd), .data-group-header, .metadata-top-item {
         background-color: #f7f7f7 !important; 
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
-    /* Ensure instructions area prints (optional override if necessary) */
-    .instructions-area {
-        background-color: #fff3e0 !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
 
     .print-container {
         display: none !important;
+    }
+    
+    /* INCREASED LOGO SIZE FOR PRINTING */
+    .logo-container img {
+        width: 90pt !important; 
+        height: 90pt !important;
+    }
+    
+    .metadata-top {
+        /* Adjusted padding/margin for print */
+        padding-top: 10pt;
+        margin-top: 10pt;
+        /* Ensure dotted line prints correctly */
+        border-top: 1pt dotted #888 !important; 
+    }
+    .metadata-top-item {
+        font-size: 10pt;
+        padding: 6pt 10pt;
+    }
+    .metadata-top-item .pass-number {
+        font-size: 12pt;
+    }
+
+    footer {
+        position: relative;
+        margin-top: 30px;
     }
 }
 
@@ -248,22 +303,18 @@ footer {
 </style>
 <script>
 function printPage() {
-    // Hide the button container before printing
     const container = document.querySelector(".print-container");
     container.style.display = 'none';
     window.print();
-    // Show the button container again after the print dialog closes
     container.style.display = 'block';
 }
 
 function loadPrintPageInMainFrame(ID) { 
 	  const url = "PrintForeignerGatePass.jsp?srNo=" + ID;
 	  
-	  // Check if the parent window has a frame/iframe named 'right'
 	  if (window.parent && window.parent.right) {
 	    window.parent.right.location.href = url;
 	  } else {
-	    // Fallback if not inside the frame structure
 	    alert("Could not load the print page in the main content frame. Loading in current window.");
 	    window.location.href = url;
 	  }
@@ -273,9 +324,13 @@ function loadPrintPageInMainFrame(ID) {
 
 <body>
 <%
-/* String id = request.getParameter("id"); */
-String  id = "1";
-id = request.getParameter("id");
+String id = request.getParameter("id");
+
+// Get current date for "Issued On" field
+java.time.LocalDateTime now = java.time.LocalDateTime.now();
+// Using correct date pattern (dd-MMM-yyyy)
+java.time.format.DateTimeFormatter dateFormatter = java.time.format.DateTimeFormatter.ofPattern("dd-MMM-yyyy"); 
+String printDate = now.format(dateFormatter);
 
 if(id == null || id.trim().isEmpty()) {
 %>
@@ -286,14 +341,11 @@ if(id == null || id.trim().isEmpty()) {
     Statement st = null;
     ResultSet rs = null;
     try {
-        // Assuming 'Database' class is correctly implemented to return a Connection
-        // If the Database class is not available for testing, this block will throw an error.
-        // For a deployed JSP, this should work if 'gatepass.Database' is correct.
         Database db = new Database();
         conn = db.getConnection();
         st = conn.createStatement();
 
-        String query = "SELECT ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, CONTRACTOR_ADDRESS, WORKSITE, DESCRIPTION, CONTRACTOR_ADHAR, VALIDITY_FROM, VALIDITY_TO, CONTRACT_TYPE, REGISTRATION,LABOUR_SIZE,PHONE " +
+        String query = "SELECT TO_CHAR(UPDATE_DATE,'DD-MON-YYYY'),ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, CONTRACTOR_ADDRESS, WORKSITE, DESCRIPTION, CONTRACTOR_ADHAR, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM, TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO, CONTRACT_TYPE, REGISTRATION,LABOUR_SIZE,PHONE " +
                        "FROM GATEPASS_CONTRACT WHERE ID=" + id;
 
         rs = st.executeQuery(query);
@@ -317,31 +369,45 @@ if(id == null || id.trim().isEmpty()) {
         <div class="logo-container">
             <img src="logo2.png" alt="CISF Logo">
         </div>
+        
+        <div class="metadata-top">
+            <div class="metadata-top-item" style="margin-right: auto;">
+                <strong>Contract Registration No:</strong>
+                <span class="pass-number">NFL/CISF/CONTRACT/0<%= id %></span>
+            </div>
+            <div class="metadata-top-item" style="margin-left: auto;">
+                <strong>Issued On:</strong>
+                <%= rs.getString(1) %>
+            </div>
+        </div>
+        
     </div>
 
     <table class="data-table">
         <tr>
-            <td class="data-group-header" colspan="4">Contract Identification and Validity</td>
+            <td class="data-group-header" colspan="4">Contract Validity and Description</td>
         </tr>
     	
         <tr>
-            <td>Contract ID:</td>
-            <td><span class="pass-number"><%= id %></span></td>
             <td>Contract Name:</td>
             <td><%= rs.getString("CONTRACT_NAME") %></td>
-        </tr>
-        <tr>
             <td>Contract Type:</td>
             <td><%= rs.getString("CONTRACT_TYPE") %></td>
-            <td>Reg. No:</td>
-            <td><%= rs.getString("REGISTRATION") %></td>
         </tr>
         <tr>
             
+            <td>Reg. No:</td>
+            <td><%= rs.getString("REGISTRATION") %></td>
             <td>Department:</td>
             <td><%= rs.getString("DEPARTMENT") %></td>
+        </tr>
+        <tr>
+            
+            
             <td>Labour Size:</td>
             <td><%= rs.getString("LABOUR_SIZE") %></td>
+            <td style="width: 15%; background-color: #f7f7f7 !important;">Description:</td>
+            <td colspan="3"><%= rs.getString("DESCRIPTION") %></td></tr>
         </tr>
         
         <tr>
@@ -349,8 +415,7 @@ if(id == null || id.trim().isEmpty()) {
             <td><span class="field-highlight" style="color:green;"><%= rs.getString("VALIDITY_FROM") %></span></td>
             <td><span style="color:red;">Valid To:</span></td>
             <td><span class="field-highlight" style="color:red;"><%= rs.getString("VALIDITY_TO") %></span></td>
-        </tr>
-        
+
 
         <tr>
             <td colspan="4" class="data-group-header">Contractor Details</td>
@@ -365,10 +430,8 @@ if(id == null || id.trim().isEmpty()) {
         <td>Contractor Contact No:</td>
             <td><%= rs.getString("PHONE") %></td>
             <td>Contractor Address:</td>
-            <td colspan="3"><%= rs.getString("CONTRACTOR_ADDRESS") %></td>
+            <td><%= rs.getString("CONTRACTOR_ADDRESS") %></td>
         </tr>
-        <tr><td style="width: 15%; background-color: #f7f7f7 !important;">Description:</td>
-            <td colspan="3"><%= rs.getString("DESCRIPTION") %></td></tr>
     </table>
 
     <div class="signature-area">
@@ -386,17 +449,17 @@ if(id == null || id.trim().isEmpty()) {
     <div class="instructions-area">
         <h4>🚨 Important Instructions</h4>
         <ul>
-            <li>This document serves as proof of contract registration with NFL Panipat for the mentioned contractor and contract name.</li>
-            <li>The registration is valid only between the dates specified in the "Valid From" and "Valid To" fields.</li>
-            <li>Entry to the plant premises is strictly regulated by CISF personnel and requires a valid Gate Pass, which is issued based on this registration.</li>
+            <li>This document serves as proof of contract registration with **NFL Panipat** for the mentioned contractor and contract name.</li>
+            <li>The registration is valid only between the dates specified in the **"Valid From"** and **"Valid To"** fields.</li>
+            <li>Entry to the plant premises is strictly regulated by **CISF personnel** and requires a valid Gate Pass, which is issued based on this registration.</li>
             <li>Any change in work scope, contractor details, or validity must be officially registered and updated in the system.</li>
             <li>The contractor must ensure all personnel working under this contract possess valid individual Gate Passes at all times.</li>
-            <li>Violation of safety or security norms will lead to immediate cancellation of this contract registration and further action.</li>
+            <li>Violation of safety or security norms will lead to **immediate cancellation** of this contract registration and further action.</li>
         </ul>
     </div>
     </div>
 <div class="print-container">
-    <button id="printPageButton" class="print-button" onclick="printPage()">Print Contract Registration</button>
+    <button id="printPageButton" class="print-button" onclick="printPage()">🖨️ Print Contract Registration</button>
 </div>
 <%
     } else {
