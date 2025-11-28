@@ -68,9 +68,7 @@ public class SaveForeignerGatePasData extends HttpServlet {
             String localAddress = safeStr(request.getParameter("localAddress"));
             String permanentAddress = safeStr(request.getParameter("permanentAddress"));
             String nationality = safeStr(request.getParameter("nationality"));
-            String validityFrom = safeStr(request.getParameter("valdity_fromDate"));
-            String validityTo = safeStr(request.getParameter("valdity_toDate"));
-            String imageData = safeStr(request.getParameter("imageData"));
+            String idcard = safeStr(request.getParameter("idcard"));
 
        
            
@@ -78,7 +76,12 @@ public class SaveForeignerGatePasData extends HttpServlet {
             Database db = new gatepass.Database();
             conn = db.getConnection();
          // ✅ Prepare SQL safely
-            String sql = "INSERT INTO GATEPASS_FOREIGNER VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO GATEPASS_FOREIGNER(SER_NO, WORKSITE, VISIT_DEPT, \r\n"
+            		+ "   NAME, FATHER_NAME, AGE, \r\n"
+            		+ "   LOCAL_ADDRESS, PERMANENT_ADDRESS, NATIONALITY, \r\n"
+            		+ "   VALIDITY_FROM, VALIDITY_TO, PHOTO, \r\n"
+            		+ "   UPDATE_DATE, UPDATE_BY, OFFICERTOMEET, \r\n"
+            		+ "   PHONE, IDCARD) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
 
             
@@ -107,9 +110,11 @@ public class SaveForeignerGatePasData extends HttpServlet {
             CommonService cs = new CommonService();
             String currentDateTime = cs.selectDateTime();
             ps.setString(13, currentDateTime);
-            ps.setString(14, "0");
+            ps.setString(14, "GatePass");
             ps.setString(15, officerToMeet);
             ps.setInt(16,phone);
+            
+            ps.setString(17,  idcard);
 
             int rows = ps.executeUpdate();
 
