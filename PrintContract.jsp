@@ -345,7 +345,7 @@ if(id == null || id.trim().isEmpty()) {
         conn = db.getConnection();
         st = conn.createStatement();
 
-        String query = "SELECT TO_CHAR(UPDATE_DATE,'DD-MON-YYYY'),ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, CONTRACTOR_ADDRESS, WORKSITE, DESCRIPTION, CONTRACTOR_ADHAR, VALIDITY_FROM, VALIDITY_TO, CONTRACT_TYPE, REGISTRATION,LABOUR_SIZE,PHONE " +
+        String query = "SELECT TO_CHAR(UPDATE_DATE,'DD-MON-YYYY'),ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, CONTRACTOR_ADDRESS, WORKSITE, DESCRIPTION, CONTRACTOR_ADHAR, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM, TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO, CONTRACT_TYPE, REGISTRATION,LABOUR_SIZE,PHONE " +
                        "FROM GATEPASS_CONTRACT WHERE ID=" + id;
 
         rs = st.executeQuery(query);
@@ -390,20 +390,24 @@ if(id == null || id.trim().isEmpty()) {
     	
         <tr>
             <td>Contract Name:</td>
-            <td colspan="3"><%= rs.getString("CONTRACT_NAME") %></td>
-        </tr>
-        <tr>
+            <td><%= rs.getString("CONTRACT_NAME") %></td>
             <td>Contract Type:</td>
             <td><%= rs.getString("CONTRACT_TYPE") %></td>
-            <td>Reg. No:</td>
-            <td><%= rs.getString("REGISTRATION") %></td>
         </tr>
         <tr>
             
+            <td>Reg. No:</td>
+            <td><%= rs.getString("REGISTRATION") %></td>
             <td>Department:</td>
             <td><%= rs.getString("DEPARTMENT") %></td>
+        </tr>
+        <tr>
+            
+            
             <td>Labour Size:</td>
             <td><%= rs.getString("LABOUR_SIZE") %></td>
+            <td style="width: 15%; background-color: #f7f7f7 !important;">Description:</td>
+            <td colspan="3"><%= rs.getString("DESCRIPTION") %></td></tr>
         </tr>
         
         <tr>
@@ -411,10 +415,7 @@ if(id == null || id.trim().isEmpty()) {
             <td><span class="field-highlight" style="color:green;"><%= rs.getString("VALIDITY_FROM") %></span></td>
             <td><span style="color:red;">Valid To:</span></td>
             <td><span class="field-highlight" style="color:red;"><%= rs.getString("VALIDITY_TO") %></span></td>
-        </tr>
-        
-        <tr><td style="width: 15%; background-color: #f7f7f7 !important;">Description:</td>
-            <td colspan="3"><%= rs.getString("DESCRIPTION") %></td></tr>
+
 
         <tr>
             <td colspan="4" class="data-group-header">Contractor Details</td>

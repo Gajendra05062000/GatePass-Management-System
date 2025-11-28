@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NFL Panipat Footer</title>
+  <style>
+    body {
+      background-color: #1e3c72;
+      margin: 0;
+      padding: 15px 0;
+      font-family: Calibri, sans-serif;
+      text-align: center;
+    }
+
+    img {
+      height: 60px;
+      margin-bottom: 8px;
+    }
+
+    a {
+      color: white;
+      font-size: 15px;
+      text-decoration: none;
+      display: block;
+      margin-top: 5px;
+    }
+
+    a:hover {
+      color: #00ffcc; /* Optional hover color */
+    }
+
+    footer {
+      font-size: 13px;
+      color: #ddd;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <center>
+    
+    <img src="logo2.png" alt="NFL Logo" href="http://10.3.122.199/" target="_blank"><br>
+      NATIONAL FERTILIZERS LIMITED, PANIPAT
+    
+    <footer>
+      &copy; <span id="year"></span> Gate Pass Management System
+    </footer>
+  </center>
+
+  <script>
+    // Automatically insert current year
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

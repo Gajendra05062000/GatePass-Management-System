@@ -1,0 +1,25 @@
+
+iframe.top {
+	border: none;
+	float: top;
+	width: 100%;
+	height: 13%;
+	}
+iframe.left {
+	border: none;
+	float: left;
+	width: 17%;
+	height: 80%;
+}
+iframe.right {
+	border: none;
+	float: right;
+	width: 83%;
+	height: 80%;
+	}
+iframe.bot {
+	border: none;
+	float: bottom;
+	width: 100%;
+	height: 7%;
+}

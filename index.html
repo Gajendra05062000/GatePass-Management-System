@@ -1,0 +1,89 @@
+ <html>
+	<head>
+		<title>LOGIN FORM</title>
+		<style type="text/css">
+			body { margin:0; background-color: lightblue; font-family: Arial, sans-serif; }
+			.login-form form {
+	    display: flex;
+	    flex-direction: column;
+	}
+	
+	.login-form input {
+	    width: 100%;
+	    padding: 12px;
+	    margin-bottom: 15px;
+	    border: 1px solid #ddd;
+	    border-radius: 8px;
+	    font-size: 15px;
+	}
+	
+	.login-form button {
+	    background: #0078d7;
+	    color: #fff;
+	    border: none;
+	    padding: 12px;
+	    border-radius: 8px;
+	    font-size: 16px;
+	    cursor: pointer;
+	    transition: 0.3s;
+	    margin:5px;
+	}
+	
+	.login-form button:hover {
+	    background: #005fa3;
+	}
+	
+	.error-label {
+	    color: #ff4d4f;
+	    font-size: 14px;
+	    margin-top: 10px;
+	    text-align: center;
+	    display: block;
+	    animation: fadeIn 0.3s ease;
+	}
+	
+	@keyframes fadeIn {
+	    from { opacity: 0; transform: translateY(-5px); }
+	    to { opacity: 1; transform: translateY(0); }
+	}
+
+	 
+	 
+	.login-container {
+	    display: flex;
+	    justify-content: center;   /* center horizontally */
+	    align-items: flex-start;   /* start from top */
+	    min-height: 100vh;         /* full viewport height */
+	    background-color: lightblue; /* optional, match your theme */
+		}
+	
+	/* Add top margin for spacing */
+	.login-form {
+	    margin-top: 80px;          /* adjust this to move down */
+	    background: #fff;
+	    border-radius: 15px;
+	    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+	    padding: 40px 50px;
+	    width: 300px;
+	    text-align: center;
+		}       
+		</style>
+	</head>
+	<body bgcolor="lightblue" onLoad="document.login.username.focus()">
+		<script language="javascript" src="login.js"></script>
+		<div class="login-container">
+        	<div class="login-form">
+            <h2>Login</h2>
+            <form name="login" method="post" action="login1.jsp">
+            <input type="hidden" name="formSubmitted" value="true">
+                <input type="text" name="username" placeholder="Username" maxlength="10" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <div class="btn-container">
+                    <button type="submit">Login</button>
+                    <button type="reset" onClick="username.focus()">Reset</button>
+               	</div>
+			</form>
+			</div>
+		</div>
+	</body>
+</html>

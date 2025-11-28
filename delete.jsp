@@ -1,0 +1,47 @@
+<%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" import="java.util.*" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" import="java.sql.*" %>
+<%@ page language="java" import="java.io.*" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'delete.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+
+  </head>
+  
+  <body>
+   <%
+   	String id=request.getParameter("id");
+     System.out.println(">>>>>>>>>>>>>>>>>>>>+++++++++++++++++++++++>>>>>>>>>>>>>>>>>>>>>>>"+id);
+     
+     Connection conn = null;
+       	Statement st=null;
+       	
+       	gatepass.Database db = new gatepass.Database();	
+   		conn = db.getConnection();
+   		st=conn.createStatement();
+   		ResultSet rs = st.executeQuery("delete from visitor where id='"+id+"'"); // Executing the Query
+   		while(rs.next()){
+       		System.out.println("hellooo");
+          
+          
+          rs.close();conn.close();  }
+   %>
+  </body>
+</html>

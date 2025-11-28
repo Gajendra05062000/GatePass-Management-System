@@ -1,0 +1,25 @@
+
+frame.top {
+	border: none;
+	float: top;
+	width: 100%;
+	height: 15%;
+	}
+frame.left {
+	border: none;
+	float: left;
+	width: 15%;
+	height: 70%;
+}
+frame.right {
+	border: none;
+	float: right;
+	width: 85%;
+	height: 80%;
+	}
+frame.bot {
+	border: none;
+	float: bottom;
+	width: 100%;
+	height: 15%;
+}
