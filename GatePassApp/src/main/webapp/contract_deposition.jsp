@@ -20,14 +20,14 @@ if (session.getAttribute("username") == null) {
 	return;
 }
 
-String srNo = request.getParameter("srNo");
+String id = request.getParameter("id");
 String action = request.getParameter("action"); // deposit or view
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-<title>Foreigner Pass Deposition & Details</title>
+<title>Contract Deposition</title>
 <meta charset="UTF-8">
 
 <style type="text/css">
@@ -353,10 +353,10 @@ body {
 }
 </style>
 <script>
-function depositPass(srNo) {
-    if (!confirm("Confirm marking this pass as DEPOSITED?")) return;
+function depositPass(id) {
+    if (!confirm("Confirm marking this Contract as DEPOSITED?")) return;
     // Redirect to trigger the 'deposit' action logic in the JSP
-    window.location.href = "Foreignpass_deposition.jsp?action=deposit&srNo=" + srNo;
+    window.location.href = "contract_deposition.jsp?action=deposit&id=" + id;
 }
 </script>
 
@@ -364,17 +364,17 @@ function depositPass(srNo) {
 <body>
 
 	<form method="get" class="input-form">
-		<label for="srNoInput">Foreigner Pass No:</label> <input type="text"
-			id="srNoInput" name="srNo" value="<%=(srNo == null ? "" : srNo)%>"
-			placeholder="Enter Pass Number"> <input type="submit"
+		<label for="idInput">Contract No:</label> <input type="text"
+			id="idInput" name="id" value="<%=(id == null ? "" : id)%>"
+			placeholder="Enter Contract Number"> <input type="submit"
 			value="View">
 	</form>
 
 	<%
 	// NO SERIAL PROVIDED
-	if (srNo == null || srNo.trim().equals("")) {
+	if (id == null || id.trim().equals("")) {
 	%>
-	<p class="error-message">Please enter a valid Pass Number to view
+	<p class="error-message">Please enter a valid Contract Number to view
 		details.</p>
 	<%
 	return;
@@ -393,22 +393,22 @@ function depositPass(srNo) {
 		connD = db.getConnection();
 
 		// Using parameterized query for security
-		String upd = "UPDATE GATEPASS_FOREIGNER SET DEPOSITED='Y' WHERE SER_NO=?";
+		String upd = "UPDATE GATEPASS_CONTRACT SET DEPOSITED='Y' WHERE ID=?";
 		psD = connD.prepareStatement(upd);
-		psD.setString(1, srNo);
+		psD.setString(1, id);
 
 		int done = psD.executeUpdate();
 
 		if (done > 0) {
 	%>
 	<script>
-                    alert("Gatepass marked as DEPOSITED successfully!");
-                    window.location.href="Foreignpass_deposition.jsp?srNo=<%=srNo%>";
+                    alert("Contract marked as DEPOSITED successfully!");
+                    window.location.href="contract_deposition.jsp?id=<%=id%>";
                 </script>
 	<%
 	} else {
 	%>
-	<script>alert("Record not found (SR No: <%=srNo%>). Update failed.");</script>
+	<script>alert("Record not found (SR No: <%=id%>). Update failed.");</script>
 	<%
 	}
 	} catch (Exception ex) {
@@ -446,17 +446,17 @@ function depositPass(srNo) {
 	st = conn.createStatement();
 
 	// Optimized SQL query (ensure all columns are correctly named in DB)
-	String sql = "SELECT SER_NO, NAME, FATHER_NAME, AGE, " + "TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VF, "
+	String sql = "SELECT ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, " + "TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VF, "
 			+ "TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VT, " + "TO_CHAR(UPDATE_DATE,'DD-MON-YYYY') AS ISSUE_DATE, "
-			+ "IDCARD, PHONE, PHOTO, DEPOSITED " + "FROM GATEPASS_FOREIGNER WHERE SER_NO='" + srNo + "'";
+			+ "CONTRACT_TYPE, PHONE, REGISTRATION, DEPOSITED " + "FROM GATEPASS_CONTRACT WHERE ID='" + id + "'";
 
 	rs = st.executeQuery(sql);
 
 	if (!rs.next()) {
 	%>
 	<p class="error-message">
-		No Foreigner Pass record found for Pass No:
-		<%=srNo%></p>
+		No Foreigner Contract record found for Contract No:
+		<%=id%></p>
 	<%
 	} else {
 	// CHECK EXPIRED
@@ -472,7 +472,7 @@ function depositPass(srNo) {
 	<div class="card">
 		<div class="metadata-top">
 			<div class="metadata-top-item" style="margin-right: auto;">
-				<strong>FOREIGNER PASS NO:</strong> <span class="pass-number">NFL/CISF/FOREIGNER/0<%=rs.getString("SER_NO")%></span>
+				<strong>CONTRACT NO:</strong> <span class="pass-number">NFL/CISF/CONTRACT/0<%=rs.getString("ID")%></span>
 			</div>
 			<div class="metadata-top-item" style="margin-left: auto;">
 				<strong>Issued On:</strong>
@@ -484,23 +484,27 @@ function depositPass(srNo) {
 			<div class="data-area">
 				<table class="data-table">
 					<tr>
-						<td>Name</td>
-						<td class="name-cell"><%=rs.getString("NAME")%></td>
+						<td>COntract Name</td>
+						<td class="name-cell"><%=rs.getString("CONTRACT_NAME")%></td>
 					</tr>
 					<tr>
-						<td>Father Name</td>
-						<td><%=rs.getString("FATHER_NAME")%></td>
+						<td>Contractor Name</td>
+						<td><%=rs.getString("CONTRACTOR_NAME")%></td>
 					</tr>
 					<tr>
-						<td>Age</td>
-						<td><%=rs.getString("AGE")%></td>
+						<td>Contract Type</td>
+						<td><%=rs.getString("CONTRACT_TYPE")%></td>
 					</tr>
 					<tr>
-						<td>ID Cardd No</td>
-						<td><%=rs.getString("IDCARD")%></td>
+						<td>Registration No</td>
+						<td><%=rs.getString("REGISTRATION")%></td>
 					</tr>
 					<tr>
-						<td>Contact No</td>
+						<td>DEPARTMENT</td>
+						<td><%=rs.getString("DEPARTMENT")%></td>
+					</tr>
+					<tr>
+						<td>CONTRACTOR MOBILE NO</td>
 						<td><%=rs.getString("PHONE")%></td>
 					</tr>
 					<tr>
@@ -512,11 +516,6 @@ function depositPass(srNo) {
 				</table>
 			</div>
 
-			<div class="photo-area">
-				<img class="photo"
-					src="ShowImageForeigner.jsp?srNo=<%=rs.getString("SER_NO")%>"
-					alt="Foreigner Photo">
-			</div>
 		</div>
 
 
@@ -530,13 +529,13 @@ function depositPass(srNo) {
 			<%
 			} else if (deposited) {
 			%>
-			<button class="action-btn disabled-btn" disabled>PASS
+			<button class="action-btn disabled-btn" disabled>CONTRACT
 				DEPOSITED SUCCESSFULLY</button>
 
 			<%
 			} else {
 			%>
-			<button onclick="depositPass('<%=rs.getString("SER_NO")%>')"
+			<button onclick="depositPass('<%=rs.getString("ID")%>')"
 				class="action-btn active-btn">Mark as DEPOSITED</button>
 			<%
 			}

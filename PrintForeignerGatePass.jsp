@@ -129,10 +129,10 @@ body {
 }
 
 .photo {
-	margin-top:40px;
+	margin-top:35px;
 	margin-right:10px;
-    width: 140px; /* Larger photo size */
-    height: 180px;
+    width: 160px; /* Larger photo size */
+    height: 200px;
     border: 4px solid #1e3c72; /* Official border */
     object-fit: cover;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
@@ -273,6 +273,9 @@ body {
         margin-top: 30px;
     }
 }
+.data-table td.photo-cell {
+    border-bottom: none !important;
+}
 
 footer {
   text-align: center;
@@ -362,42 +365,56 @@ if (srNo == null || srNo.trim().isEmpty()) {
         </div>
         
     </div>
-    <div class="content-top-section">
-        <div style="flex-grow: 1; padding-right: 30px;">
-            <table class="data-table">
-                <tr>
-                    <td class="data-group-header" colspan="2">Foreigner Identification Details</td>
-                </tr>
-                <tr>
-                    <td>Name:</td>
-                    <td><%= rs.getString(4) %></td>
-                </tr>
-                <tr>
-                    <td>Father Name:</td>
-                    <td><%= rs.getString(5) %></td>
-                </tr>
-                <tr>
-                    <td>Nationality:</td>
-                    <td><%= rs.getString(10) %></td> </tr>
-                <tr>
-                    <td>Age:</td>
-                    <td><%= rs.getString(6) %></td> </tr>
-                <tr>
-                    <td>Contact No.:</td>
-                    <td><%= rs.getString(7) %></td>
-                </tr>
-                <tr>
-                    <td>ID Card No.:</td>
-                    <td><%= rs.getString(14) %></td>
-                </tr>
-            </table>
-        </div>
+<div class="content-top-section">
+    <div style="flex-grow: 1;">
+        <table class="data-table">
+            <tr>
+                <td class="data-group-header" colspan="3">Foreigner Identification Details</td>
+            </tr>
 
-        <div class="photo-container-right">
-            <img src="ShowImageForeigner.jsp?srNo=<%= rs.getString("SER_NO") %>"
-                 class="photo" alt="Foreigner Photo">
-        </div>
+            <tr>
+                <td>Name:</td>
+                <td><%= rs.getString(4) %></td>
+
+                <!-- PHOTO RIGHT SIDE WITH LABEL ABOVE -->
+                <td rowspan="7" class="photo-cell" style="text-align:center; width:200px;">
+                    
+                    <img src="ShowImageForeigner.jsp?srNo=<%= rs.getString("SER_NO") %>" class="photo" alt="Foreigner Photo">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Father Name:</td>
+                <td><%= rs.getString(5) %></td>
+            </tr>
+
+            <tr>
+                <td>Nationality:</td>
+                <td><%= rs.getString(10) %></td>
+            </tr>
+
+            <tr>
+                <td>Age:</td>
+                <td><%= rs.getString(6) %></td>
+            </tr>
+
+            <tr>
+                <td>Contact No.:</td>
+                <td><%= rs.getString(7) %></td>
+            </tr>
+
+            <tr>
+                <td>ID Card No.:</td>
+                <td><%= rs.getString(14) %></td>
+            </tr>
+
+            <tr>
+                <td>Permanent Address:</td>
+                <td><%= rs.getString(9) %></td>
+            </tr>
+        </table>
     </div>
+</div>
 
     <table class="data-table" style="margin-top: 25px; border: 1px solid #d4e8f7; border-radius: 8px; overflow: hidden;">
         <tr>

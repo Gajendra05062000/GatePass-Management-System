@@ -75,7 +75,12 @@ try {
     
     try {
         connContract = db.getConnection();
-        String sql = "SELECT ID, CONTRACT_NAME, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM, TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO FROM GATEPASS_CONTRACT ORDER BY ID ASC";
+        String sql = "SELECT ID, CONTRACT_NAME, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM,"
+                + " TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO, DEPOSITED"
+                + " FROM GATEPASS_CONTRACT"
+                + " WHERE TRUNC(VALIDITY_TO) > TRUNC(SYSDATE)"
+                + " AND DEPOSITED <> 'Y'"
+                + " ORDER BY ID ASC";        
         stContract = connContract.createStatement();
         rsContract = stContract.executeQuery(sql);
         
@@ -86,7 +91,9 @@ try {
             String contractName = rsContract.getString("CONTRACT_NAME");
             String vFrom = rsContract.getString("VALIDITY_FROM");
             String vTo   = rsContract.getString("VALIDITY_TO");
-
+			System.out.println("Validity_to: "+ rsContract.getString("VALIDITY_TO"));
+			System.out.println("Validity_to: "+ rsContract.getString("DEPOSITED"));
+	
             String contractDisplayValue = "(" + contractId + ") " + contractName;
 
             contractOptionsHtml.append("<option value=\"")

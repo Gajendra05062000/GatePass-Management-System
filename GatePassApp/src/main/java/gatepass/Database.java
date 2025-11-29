@@ -12,7 +12,7 @@ public Connection getConnection() {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 
 			String url = "jdbc:oracle:thin:@10.3.111.120:1521:ORCL";
-			conn = DriverManager.getConnection(url, "PERSONNEL", "PERSONNEL");			
+			conn = DriverManager.getConnection(url, "GATEPASS", "GATEPASS");			
 			
 			System.out.println("DB CONNECTED-->PERSONNEL");
 

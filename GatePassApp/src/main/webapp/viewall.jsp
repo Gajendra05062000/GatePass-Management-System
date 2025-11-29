@@ -259,23 +259,24 @@ int currentPage = 1;
 		int endRow   = currentPage * RECORDS_PER_PAGE;
 
 		String dataQuery =
-		    "SELECT * FROM ( "
-		    + " SELECT inner_data.*, ROWNUM rn FROM ( "
-		    + "     SELECT ID, NAME, FATHERNAME, AGE, ADDRESS, DISTRICT, STATE, PINCODE, "
-		    + "            PHONE, TO_CHAR(ENTRYDATE,'DD-MON-YYYY')AS ENTRYDAT,ENTRYDATE, TIME, OFFICERTOMEET, PURPOSE, MATERIAL, "
-		    + "            VEHICLE, DEPARTMENT "
-		    + "     FROM visitor "
-		    + "     WHERE ( "
-		    + "            LOWER(NAME) LIKE LOWER('%" + search + "%') "
-		    + "         OR LOWER(OFFICERTOMEET) LIKE LOWER('%" + search + "%') "
-		    + "         OR LOWER(PURPOSE) LIKE LOWER('%" + search + "%') "
-		    + "         OR LOWER(PHONE) LIKE LOWER('%" + search + "%') "
-		    + "         OR TO_CHAR(ID) LIKE '%" + search + "%' "
-		    + "     ) "
-		    + "     ORDER BY ENTRYDATE DESC "
-		    + " ) inner_data "
-		    + " WHERE ROWNUM <= " + endRow + " "
-		    + ") WHERE rn >= " + startRow;
+			    "SELECT * FROM ( "
+			    + " SELECT inner_data.*, ROWNUM rn FROM ( "
+			    + "     SELECT ID, NAME, FATHERNAME, AGE, ADDRESS, DISTRICT, STATE, PINCODE, "
+			    + "            PHONE, TO_CHAR(ENTRYDATE,'DD-MON-YYYY') AS ENTRYDAT, ENTRYDATE, TIME, OFFICERTOMEET, PURPOSE, MATERIAL, "
+			    + "            VEHICLE, DEPARTMENT "
+			    + "     FROM visitor "
+			    + "     WHERE ( "
+			    + "            LOWER(NAME) LIKE LOWER('%" + search + "%') "
+			    + "         OR LOWER(OFFICERTOMEET) LIKE LOWER('%" + search + "%') "
+			    + "         OR LOWER(PURPOSE) LIKE LOWER('%" + search + "%') "
+			    + "         OR LOWER(PHONE) LIKE LOWER('%" + search + "%') "
+			    + "         OR TO_CHAR(ID) LIKE '%" + search + "%' "
+			    + "     ) "
+			    + "     ORDER BY ENTRYDATE DESC, ID DESC "
+			    + " ) inner_data "
+			    + " WHERE ROWNUM <= " + endRow + " "
+			    + ") WHERE rn >= " + startRow;
+
 
 
 		rs = st.executeQuery(dataQuery);

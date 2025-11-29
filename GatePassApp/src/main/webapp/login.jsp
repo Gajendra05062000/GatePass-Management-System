@@ -499,8 +499,10 @@ function changePassword() {
                 <a href="#" class="main-link">📝 Contract</a>
                 <div class="dropdown-content">
                     <a href="Contract.jsp" target="right">Contract Registration</a>
-                    <a href="UpdateContract.jsp" target="right">Update Contract Details</a>
                     <a href="Contract_History.jsp" target="right">Contract History</a>
+                    <a href="UpdateContract.jsp" target="right">Update Contract Details</a>
+                    <a href="contract_deposition.jsp" target="right">Deposit Contract</a>
+                    
                 </div>
             </li>
             
