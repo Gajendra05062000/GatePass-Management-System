@@ -193,7 +193,7 @@ try {
             } else {
                 status = "Expired";
                 color = "style='color:red;font-weight:bold;'";
-            }
+            } 
         }
 %>
 
