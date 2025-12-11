@@ -75,12 +75,7 @@ try {
     
     try {
         connContract = db.getConnection();
-        String sql = "SELECT ID, CONTRACT_NAME, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM,"
-                + " TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO, DEPOSITED"
-                + " FROM GATEPASS_CONTRACT"
-                + " WHERE TRUNC(VALIDITY_TO) > TRUNC(SYSDATE)"
-                + " AND DEPOSITED <> 'Y'"
-                + " ORDER BY ID ASC";        
+        String sql = "SELECT ID, CONTRACT_NAME, TO_CHAR(VALIDITY_FROM,'DD-MON-YYYY') AS VALIDITY_FROM, TO_CHAR(VALIDITY_TO,'DD-MON-YYYY') AS VALIDITY_TO, DEPOSITED FROM GATEPASS_CONTRACT WHERE TRUNC(VALIDITY_TO) > TRUNC(SYSDATE) AND UPPER(TRIM(NVL(DEPOSITED,'N'))) <> 'Y' ORDER BY ID ASC";        
         stContract = connContract.createStatement();
         rsContract = stContract.executeQuery(sql);
         

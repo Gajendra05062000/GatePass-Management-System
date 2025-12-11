@@ -189,7 +189,14 @@ final int RECORDS_PER_PAGE = 100;
 int currentPage = 1;
 
 	
-
+String pageParam = request.getParameter("page");
+if (pageParam != null && !pageParam.trim().equals("")) {
+    try {
+        currentPage = Integer.parseInt(pageParam);
+    } catch (Exception e) {
+        currentPage = 1;
+    }
+}
 	
 	// Ensure current page is at least 1
 	if (currentPage < 1) {
@@ -382,7 +389,8 @@ int currentPage = 1;
 		<%
 				} else {
 		%>
-					<a href="?page=<%=i%>"><%=i%></a>
+					<a href="?page=<%=i%>&search=<%=search%>"><%=i%></a>
+
 		<%
 				}
 			}

@@ -233,7 +233,7 @@ function filterTable() {
                                     if (isActive) {
                                         // If within the validity range, check if gatepass is taken
                                         if (deposited != null && deposited.equalsIgnoreCase("Y")) {
-                                            status = "Gatepass Taken";
+                                            status = "Deposited";
                                             color = "style='color:orange;font-weight:bold;'";
                                         } else {
                                             status = "Active";

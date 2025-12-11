@@ -174,7 +174,7 @@ try {
 
             if (active) {
                 if ("Y".equalsIgnoreCase(deposited)) {
-                    status = "Gatepass Taken";
+                    status = "Depositted";
                     color = "style='color:orange;font-weight:bold;'";
                 } else {
                     status = "Active";

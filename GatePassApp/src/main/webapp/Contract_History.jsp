@@ -93,7 +93,7 @@ img {
 
 #contractTable td {
 	border: 1px solid #ddd; /* Light separator lines */
-	padding: 10px 15px;
+	padding: 10px 10px;
 	text-align: left;
 	font-size: 14px;
 }
@@ -183,7 +183,8 @@ img {
 				// Fetch contracts, order by ID descending (most recent first)
 				String query = "SELECT ID, CONTRACT_NAME, CONTRACTOR_NAME, DEPARTMENT, "
 				+ "TO_CHAR(VALIDITY_FROM, 'DD-MON-YYYY') AS V_FROM, "
-				+ "TO_CHAR(VALIDITY_TO, 'DD-MON-YYYY') AS V_TO, " + "REGISTRATION, DEPOSITED "
+				+ "TO_CHAR(VALIDITY_TO, 'DD-MON-YYYY') AS V_TO, " 
+				+ "REGISTRATION, DEPOSITED "
 				+ "FROM GATEPASS_CONTRACT ORDER BY ID DESC";
 
 				rs = st.executeQuery(query);
@@ -204,9 +205,9 @@ img {
                             Date to   = oracleFormat.parse(vt);
 
                             if (!today.before(from) && !today.after(to)) {
-                            	if (deposited=="Y" || deposited=="y") {
+                            	if ("Y".equalsIgnoreCase(deposited)) {
                                     // Gatepass taken
-                                    status = "Gatepass Taken";
+                                    status = "Deposited";
                                     color = "style='color:orange;font-weight:bold;'";
                                 } else {
                                     // Normal Active

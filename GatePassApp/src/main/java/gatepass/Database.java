@@ -14,7 +14,7 @@ public Connection getConnection() {
 			String url = "jdbc:oracle:thin:@10.3.111.120:1521:ORCL";
 			conn = DriverManager.getConnection(url, "GATEPASS", "GATEPASS");			
 			
-			System.out.println("DB CONNECTED-->PERSONNEL");
+			System.out.println("DB CONNECTED-->GATEPASS");
 
 		} catch (Exception e) {
 			e.printStackTrace();

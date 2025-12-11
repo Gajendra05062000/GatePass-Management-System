@@ -65,7 +65,7 @@ body {
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 420px;
+	width: 600px;
 	z-index: 31;
 	display:flex;
 	align-items:center;
@@ -78,8 +78,9 @@ body {
 	border:1px solid #e6e9ee;
 }
 
-.top-search label { font-size:14px; color:#333; font-weight:600; }
-.top-search input[type="text"] { padding:8px 10px; border:1px solid #ccc; border-radius:6px; width:170px; font-size:14px; }
+.top-search label { font-size:14px; color:#333; font-weight:250; }
+.top-search label b{ font-size:14px; color:green; font-weight:250; }
+.top-search input[type="text"] { padding:8px 10px; border:1px solid #ccc; border-radius:6px; width:180px; font-size:14px; }
 .top-search input[type="submit"] { padding:8px 14px; border:none; border-radius:6px; background:var(--primary-navy); color:#fff; cursor:pointer; font-size:14px; }
 
 .container {
@@ -241,7 +242,7 @@ button:hover, input[type="reset"]:hover { background-color: #c82333; transform: 
     from { opacity: 0; top: 0px; }
     to { opacity: 1; top: 20px; }
 }
-    </style>
+ </style>
 
 <script>
 /* -------------------------------
@@ -491,8 +492,8 @@ try {
 
 <!-- Top search box (submits to same page) -->
 <form action="Revisit.jsp" method="get" class="top-search" style="">
-  <label for="id">Visitor ID:</label>
-  <input type="text" id="id" name="id" placeholder="Enter Visitor ID" value="<%= prevId != null ? prevId : "" %>">
+  <label  for="id">Visitor ID: <b>NFL/CISF/VISITOR/0</b></label>
+  <input type="text" id="id" name="id" placeholder="Enter Visitor ID after 0" value="<%= prevId != null ? prevId : "" %>">
   <input type="submit" name="view" value="View">
   <input type="button" value="New Revisit" onclick="window.location='Revisit.jsp';" title="Clear search">
 </form>

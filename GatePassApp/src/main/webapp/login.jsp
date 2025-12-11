@@ -512,7 +512,7 @@ function changePassword() {
                 
                     <a href="visitor.jsp" target="right">Visitor Gatepass</a>
                     <a href="viewall.jsp" target="right">View All Visitors</a>
-                    <a href="visitor_revisit.jsp" target="right">Visitor Revisit</a>
+                    <a href="Revisit.jsp" target="right">Visitor Revisit</a>
                     <a href="viewbydate.jsp" target="right">View by Date</a>
                     <a href="viewbyname.jsp" target="right">View by Officer to Meet</a>
                     <a href="viewbystate.jsp" target="right">View by State</a>

@@ -199,7 +199,7 @@ function filterTable() {
                                     if (!today.before(from) && !today.after(to)) {
                                     	if (deposited=="Y" || deposited=="y") {
                                             // Gatepass taken
-                                            status = "Gatepass Taken";
+                                            status = "Deposited";
                                             color = "style='color:orange;font-weight:bold;'";
                                         } else {
                                             // Normal Active
